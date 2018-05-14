@@ -1,5 +1,4 @@
 import discord
-import asyncio
 import json
 import requests
 import re
@@ -40,15 +39,15 @@ commands = {}
 def cmd_talk(message):
 	talking[str(message.author)] = True
 	print(talking)
-	return 'Started talking to CleverBot. To stop type `cvb stop`'
+	return 'Started talking to Cleverbot. To stop type `cvb stop`'
 	
 def cmd_stop(message):
 	talking[str(message.author)] = False
 	print(talking)
-	return 'Stopped talking to CleverBot. To talk again type `cvb talk`'
+	return 'Stopped talking to Cleverbot. To talk again type `cvb talk`'
 
 def cmd_help(message):
-	return 'All CleverBot commands start with cvb\n`cvb help` - show this message\n`cvb talk` - start talking with CleverBot\n`cvb stop` - stop talking to CleverBot\nNote: After starting talking to CleverBot all messages will be sent to CleverBot. To stop this you must run the `cvb stop` command.'
+	return 'All Cleverbot commands start with cvb\n`cvb help` - show this message\n`cvb talk` - start talking with Cleverbot\n`cvb stop` - stop talking to Cleverbot'
 
 
 def init():
@@ -59,17 +58,20 @@ def init():
 
 @client.event
 async def on_message(message):
-	if message.author == client.user or not str(message.channel).startswith("cleverbot"):
+	if message.author == client.user:
 		return
 	if message.content.startswith('cvb'):
-		command = ''
-		try:
-			command = re.match('cvb (.*[a-zA-Z0-9])', message.content).group(1)
-			resp = commands[command](message)
-			if resp != '':
-				await client.send_message(message.channel, resp)
-		except:
-			await client.send_message(message.channel, "Command `cvb {}` not found. Try `cvb help` for a list of commands.".format(command))
+		if not str(message.channel).startswith("cleverbot"):
+			await client.send_message(message.channel, "Cleverbot can only be used in a text channel named `cleverbot`.")
+		else:
+			command = ''
+			try:
+				command = re.match('cvb (.*[a-zA-Z0-9])', message.content).group(1)
+				resp = commands[command](message)
+				if resp != '':
+					await client.send_message(message.channel, resp)
+			except:
+				await client.send_message(message.channel, "Command `cvb {}` not found. Try `cvb help` for a list of commands.".format(command))
 	else:
 		if str(message.author) in talking.keys() and talking[str(message.author)] == True:
 			cleverResponse = sendMessage(message.content)
@@ -77,11 +79,12 @@ async def on_message(message):
 
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------------')
-    init()
+	print('Logged in as')
+	print(client.user.name)
+	print(client.user.id)
+	print('------------')
+	init()
+	await client.change_presence(game=discord.Game(name='cvb help'))
 
 
 client.run(TOKEN)
