@@ -36,11 +36,13 @@ talking = {}
 commands = {}
 profile = {}
 client = discord.Client()
+# server = client.get_server()
 currentBot = 'Cleverbot'
 profile['TicTacToe'] = open('tictactoe_profile.png', 'rb').read()
 profile['Cleverbot'] = open('cleverbot_profile.png', 'rb').read()
 
 def cmd_switch(message):
+	global currentBot
 	if currentBot == 'Cleverbot':
 		currentBot = 'TicTacToe'
 	else:
@@ -61,8 +63,8 @@ def cmd_stop(message):
 def cmd_help(message):
 	retMsg = 'All Cleverbot commands start with cvb:\n'
 	for command in commands:
-		retMsg += '`cvb {}` - {}\n'.format(command['cmd'], command['desc'])
-	return '\n`cvb help` - show this message\n`cvb talk` - start talking with Cleverbot\n`cvb stop` - stop talking to Cleverbot\n`cvb info` - print information about Cleverbot'
+		retMsg += '`cvb {}` - {}\n'.format(commands[command]['cmd'], commands[command]['desc'])
+	return retMsg
 
 def cmd_info(message):
 	return 'Cleverbot is a chatterbot web application that uses an artificial intelligence algorithm to have conversations with humans.'
@@ -92,11 +94,11 @@ def init():
 	commands['info']['desc'] = 'details about Cleverbot'
 	commands['info']['bot'] = 'Cleverbot'
 
-	commands['switch'] = {}
-	commands['switch']['func'] = cmd_switch
-	commands['switch']['cmd'] = 'switch'
-	commands['switch']['desc'] = 'switch between Cleverbot and TicTacToe'
-	commands['switch']['bot'] = 'General'
+	# commands['switch'] = {}
+	# commands['switch']['func'] = cmd_switch
+	# commands['switch']['cmd'] = 'switch'
+	# commands['switch']['desc'] = 'switch between Cleverbot and TicTacToe'
+	# commands['switch']['bot'] = 'General'
 
 
 @client.event
@@ -113,7 +115,7 @@ async def on_message(message):
 				if commands[command]['bot'] == 'General' or commands[command]['bot'] == currentBot:
 					resp = commands[command]['func'](message)
 					if command == 'switch':
-						await client.change_nickname(discord.Server.me, currentBot)
+						await client.change_nickname(member=discord.Server.me, nickname=currentBot)
 						await client.edit_profile(avatar=profile[currentBot])
 				else:
 					await client.send_message(message.channel, 'Command `cvb {}` is not available for the current bot. Type `cvb switch` to switch to another bot and try again.')
@@ -131,7 +133,9 @@ async def on_ready():
 	print('Logged in as')
 	print(client.user.name)
 	print(client.user.id)
+	# print(client.server.id)
 	print('------------')
+	# print('Server name: {}'.format(server.name))
 	init()
 	await client.change_presence(game=discord.Game(name='cvb help'))
 
