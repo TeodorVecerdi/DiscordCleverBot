@@ -47,7 +47,7 @@ def cmd_stop(message):
 	return 'Stopped talking to Cleverbot. To talk again type `cvb talk`'
 
 def cmd_help(message):
-	return 'All Cleverbot commands start with cvb\n`cvb help` - show this message\n`cvb talk` - start talking with Cleverbot\n`cvb stop` - stop talking to Cleverbot'
+	return 'All Cleverbot commands start with cvb\n`cvb help` - show this message\n`cvb talk` - start talking with Cleverbot\n`cvb stop` - stop talking to Cleverbot\n`cvb info` - print information about Cleverbot'
 
 def cmd_info(message):
 	return 'Cleverbot is a chatterbot web application that uses an artificial intelligence algorithm to have conversations with humans.'
