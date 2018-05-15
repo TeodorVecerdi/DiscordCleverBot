@@ -49,11 +49,14 @@ def cmd_stop(message):
 def cmd_help(message):
 	return 'All Cleverbot commands start with cvb\n`cvb help` - show this message\n`cvb talk` - start talking with Cleverbot\n`cvb stop` - stop talking to Cleverbot'
 
+def cmd_info(message):
+	return 'Cleverbot is a chatterbot web application that uses an artificial intelligence algorithm to have conversations with humans.'
 
 def init():
 	commands['talk'] = cmd_talk
 	commands['stop'] = cmd_stop
 	commands['help'] = cmd_help
+	commands['info'] = cmd_info
 
 
 @client.event
