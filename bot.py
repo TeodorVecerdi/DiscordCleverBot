@@ -2,6 +2,7 @@ import discord
 import json
 import requests
 import re
+import random
 
 TOKEN = 'NDQ1NjUwNDc2NDM2ODE1ODkz.Ddtj7Q.9AmZpLZxE1NnyjUq-R9gXIxntCM'
 nick = 'vqgXph15'
@@ -36,22 +37,9 @@ def sendMessage(message):
 
 talking = {}
 commands = {}
-profile = {}
 client = discord.Client()
-currentBot = 'Cleverbot'
-profile['TicTacToe'] = open('tictactoe_profile.png', 'rb').read()
-profile['Cleverbot'] = open('cleverbot_profile.png', 'rb').read()
 
-
-def cmd_switch(message):
-    global currentBot
-    if currentBot == 'Cleverbot':
-        currentBot = 'TicTacToe'
-    else:
-        currentBot = 'Cleverbot'
-
-    return 'Switched to `{}`. Type `cvb switch` to switch again'
-
+ee_0xcpu = []
 
 def cmd_talk(message):
     talking[str(message.author)] = True
@@ -68,7 +56,8 @@ def cmd_stop(message):
 def cmd_help(message):
     retMsg = 'All Cleverbot commands start with cvb:\n'
     for command in commands:
-        retMsg += '`cvb {}` - {}\n'.format(commands[command]['cmd'], commands[command]['desc'])
+        if commands[command]['shown'] == True:
+            retMsg += '`cvb {}` - {}\n'.format(commands[command]['cmd'], commands[command]['desc'])
     return retMsg
 
 
@@ -77,46 +66,28 @@ def cmd_info(message):
 
 
 def cmd_0xcpu(message):
-    return 'timctf{m0r3_cl3veR_th4n_u}'
+    return ee_0xcpu[random.randrange(0, len(ee_0xcpu))]
+
+
+def add_command(name, desc, func, shown):
+    global commands
+    commands[name] = {}
+    commands[name]['func'] = func
+    commands[name]['cmd'] = name
+    commands[name]['desc'] = desc
+    commands[name]['shown'] = shown
 
 
 def init():
-    commands['talk'] = {}
-    commands['talk']['func'] = cmd_talk
-    commands['talk']['cmd'] = 'talk'
-    commands['talk']['desc'] = 'start talking with Cleverbot'
-    commands['talk']['bot'] = 'Cleverbot'
+    add_command('talk', 'start talking with Cleverbot', cmd_talk, True)
+    add_command('stop', 'stop talking to Cleverbot', cmd_stop, True)
+    add_command('help', 'print this help message', cmd_help, True)
+    add_command('info', 'details about Cleverbot', cmd_info, True)
+    add_command('0xcpu', 'dunno', cmd_0xcpu, False)
 
-    commands['stop'] = {}
-    commands['stop']['func'] = cmd_stop
-    commands['stop']['cmd'] = 'stop'
-    commands['stop']['desc'] = 'stop talking to Cleverbot'
-    commands['stop']['bot'] = 'Cleverbot'
-
-    commands['help'] = {}
-    commands['help']['func'] = cmd_help
-    commands['help']['cmd'] = 'help'
-    commands['help']['desc'] = 'print this help message'
-    commands['help']['bot'] = 'General'
-
-    commands['info'] = {}
-    commands['info']['func'] = cmd_info
-    commands['info']['cmd'] = 'info'
-    commands['info']['desc'] = 'details about Cleverbot'
-    commands['info']['bot'] = 'Cleverbot'
-
-    commands['0xcpu'] = {}
-    commands['0xcpu']['func'] = cmd_0xcpu
-    commands['0xcpu']['cmd'] = '0xcpu'
-    commands['0xcpu']['desc'] = 'dunno'
-    commands['0xcpu']['cleverbot'] = 'Cleverbot'
-
-
-# commands['switch'] = {}
-# commands['switch']['func'] = cmd_switch
-# commands['switch']['cmd'] = 'switch'
-# commands['switch']['desc'] = 'switch between Cleverbot and TicTacToe'
-# commands['switch']['bot'] = 'General'
+    ee_0xcpu.append('i put 0xcpu it give flag')
+    ee_0xcpu.append('i put 0xcpu it dont work')
+    ee_0xcpu.append('rumor has it that b64 bruteforce is still running')
 
 
 @client.event
@@ -154,6 +125,5 @@ async def on_ready():
     # print('Server name: {}'.format(server.name))
     init()
     await client.change_presence(game=discord.Game(name='cvb help'))
-
 
 client.run(TOKEN)
