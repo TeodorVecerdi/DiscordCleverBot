@@ -110,7 +110,7 @@ async def on_message(message):
                                           "Command `cvb {}` not found. Try `cvb help` for a list of commands.".format(
                                               command))
     else:
-        if str(message.author) in talking.keys() and talking[str(message.author)] == True:
+        if str(message.author) in talking.keys() and talking[str(message.author)]:
             cleverResponse = sendMessage(message.content)
             await client.send_message(message.channel, "{}, {}".format(message.author.mention, cleverResponse))
 
